@@ -1,12 +1,15 @@
 import { useSession } from "@/ctx";
 import { router } from "expo-router";
-import { Text, View } from "react-native";
+import { StatusBar, Text, View } from "react-native";
 
 export default function SignIn() {
   const { signIn } = useSession();
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View className="flex-1 justify-center items-center bg-slate-950">
+      <StatusBar barStyle={"light-content"} />
+
       <Text
+        className="text-white"
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -14,7 +17,7 @@ export default function SignIn() {
           router.replace("/");
         }}
       >
-        Sign In
+        Sign In 13
       </Text>
     </View>
   );
