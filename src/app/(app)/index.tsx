@@ -1,19 +1,32 @@
+import { Sheet } from "@/components/Sheet";
 import { useSession } from "@/ctx";
-import { Text, View } from "react-native";
+import { useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MapView from "react-native-maps";
 
-export default function Index() {
+export default function IndexMapPage() {
   const { signOut } = useSession();
+  const [isOpened, setIsOpened] = useState(false);
+
+  const toggleSheet = () => {
+    setIsOpened((prev) => !prev);
+  };
 
   return (
-    <View className="flex-1 justify-center items-center bg-slate-900">
-      <Text
-        onPress={() => {
-          // The `app/(app)/_layout.tsx` will redirect to the sign-in screen.
-          signOut();
-        }}
-      >
-        Sign Out
-      </Text>
-    </View>
+    <GestureHandlerRootView className="flex-1 bg-slate-900 relative">
+      <View className="absolute top-16 right-10 p-4 gap-8 bg-red-500 z-10">
+        <Pressable onPress={signOut}>
+          <Text>Sair</Text>
+        </Pressable>
+        <Pressable onPress={toggleSheet}>
+          <Text>Open</Text>
+        </Pressable>
+      </View>
+
+      {isOpened && <Sheet onClose={toggleSheet} />}
+
+      <MapView style={{ width: "100%", height: "100%" }} />
+    </GestureHandlerRootView>
   );
 }
