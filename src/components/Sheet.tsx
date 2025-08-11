@@ -1,6 +1,11 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ReactNode } from "react";
 import { Dimensions, Text } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   SlideInDown,
@@ -18,9 +23,10 @@ const SHEET_OVER_DRAG = 20;
 
 type Props = {
   onClose: () => void;
+  sheetHeight?: number;
 };
 
-export function Sheet({ onClose }: Props) {
+const SheetContent = ({ onClose, sheetHeight = SHEET_HEIGHT }: Props) => {
   const offset = useSharedValue(0);
 
   const pan = Gesture.Pan()
@@ -31,12 +37,10 @@ export function Sheet({ onClose }: Props) {
       offset.value = offsetDelta > 0 ? offsetDelta : withSpring(clamp);
     })
     .onFinalize(() => {
-      if (offset.value < SHEET_HEIGHT / 3) {
-        console.log("Closing sheet");
-
+      if (offset.value < sheetHeight / 3) {
         offset.value = withSpring(0);
       } else {
-        offset.value = withTiming(SHEET_HEIGHT, {}, () => {
+        offset.value = withTiming(sheetHeight, {}, () => {
           runOnJS(onClose)();
         });
       }
@@ -49,11 +53,11 @@ export function Sheet({ onClose }: Props) {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
-        className="absolute bg-zinc-800 z-10"
+        className="absolute bg-slate-800 z-10"
         style={[
           {
             width: DIMENSIONS.width,
-            height: SHEET_HEIGHT,
+            height: sheetHeight,
             bottom: -SHEET_OVER_DRAG * 1.3,
           },
           translateY,
@@ -73,4 +77,17 @@ export function Sheet({ onClose }: Props) {
       </Animated.View>
     </GestureDetector>
   );
-}
+};
+
+const SheetRoot = ({ children }: { children: ReactNode }) => {
+  return (
+    <GestureHandlerRootView className="flex-1 relative">
+      {children}
+    </GestureHandlerRootView>
+  );
+};
+
+export const Sheet = {
+  Content: SheetContent,
+  Root: SheetRoot,
+};

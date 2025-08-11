@@ -1,18 +1,19 @@
-import { LinearGradient } from "expo-linear-gradient";
-import Entypo from "@expo/vector-icons/Entypo";
 import TextBase from "@/components/TextBase";
-import { zinc } from "tailwindcss/colors";
+import Entypo from "@expo/vector-icons/Entypo";
+import { clsx } from "clsx";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect } from "react";
 import { View } from "react-native";
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
-  Easing,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { zinc } from "tailwindcss/colors";
 
-export function Logo() {
+export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const rotate = useSharedValue(0);
 
   useEffect(() => {
@@ -24,7 +25,6 @@ export function Logo() {
       -1,
       true,
     );
-    console.log("Logo animation started");
   }, [rotate]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -38,23 +38,34 @@ export function Logo() {
   });
 
   return (
-    <View className="rounded-md overflow-hidden mx-auto mb-5">
+    <View
+      className={clsx("rounded-md overflow-hidden", {
+        "mx-0 mb-0": size === "sm",
+        "mx-auto mb-5": size === "md",
+      })}
+    >
       <LinearGradient
         colors={["#cc5500", "#FF8F33"]}
         style={{
           marginHorizontal: "auto",
           justifyContent: "center",
           alignItems: "center",
-          padding: 20,
+          padding: size === "md" ? 20 : 10,
           paddingVertical: 10,
         }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
         <Animated.View style={animatedStyle}>
-          <Entypo name="megaphone" size={40} color={zinc[100]} />
+          <Entypo
+            name="megaphone"
+            size={size === "md" ? 40 : 20}
+            color={zinc[100]}
+          />
         </Animated.View>
-        <TextBase className="text-zinc-100 mt-2 font-bold">AvisAÍ</TextBase>
+        {size === "md" && (
+          <TextBase className="text-zinc-100 mt-2 font-bold">AvisAÍ</TextBase>
+        )}
       </LinearGradient>
     </View>
   );
