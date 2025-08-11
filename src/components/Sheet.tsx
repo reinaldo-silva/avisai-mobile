@@ -1,6 +1,7 @@
+import Heading from "@/components/Heading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ReactNode } from "react";
-import { Dimensions, Text } from "react-native";
+import { Dimensions, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -24,9 +25,16 @@ const SHEET_OVER_DRAG = 20;
 type Props = {
   onClose: () => void;
   sheetHeight?: number;
+  title: string;
+  children?: ReactNode;
 };
 
-const SheetContent = ({ onClose, sheetHeight = SHEET_HEIGHT }: Props) => {
+const SheetContent = ({
+  onClose,
+  sheetHeight = SHEET_HEIGHT,
+  title,
+  children,
+}: Props) => {
   const offset = useSharedValue(0);
 
   const pan = Gesture.Pan()
@@ -71,9 +79,12 @@ const SheetContent = ({ onClose, sheetHeight = SHEET_HEIGHT }: Props) => {
           className="mt-4 self-center"
           size={24}
         />
-        <Text className="text-zinc-100 text-lg font-bold m-6">
-          This is a sheet component
-        </Text>
+        <View className="mt-2 flex-1">
+          <Heading size="md" className="mb-3 px-6">
+            {title}
+          </Heading>
+          {children}
+        </View>
       </Animated.View>
     </GestureDetector>
   );
